@@ -130,9 +130,7 @@ app.post('/:id', upload.array('file'), function(req, res) {
         return res.json({success: true});
     }
     if (!db[id]) {
-        return remove(file.filename, function(err) {
-            res.json({error: true});
-        });
+        return res.json({error: true});
     }
     files.forEach(function(file) {
         var data = {
