@@ -8,6 +8,8 @@ Upload your files on your computer
 and scan the QR code on your smartphone.  
 Supports HTTP Basic Authentication.
 
+![# Screenshot](screenshot.png)
+
 ## Setup & Run
 
 Please change the username and password in `index.js`.
