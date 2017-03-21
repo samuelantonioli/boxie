@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/grids-responsive-min.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+        <div class="header">
+            <h1 class="brand-title">Boxie</h1>
+            <h2 class="brand-tagline">Push your files.</h2>
+
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <button id="new" class="pure-button">New Box</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="scan" class="pure-button">Scan QR</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div>
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+                <!--
+                <h1 class="content-subhead">Pinned Post</h1>
+                -->
+
+                <!-- A single blog post -->
+                <section class="post">
+                    <div class="post-description" style="text-align: center">
+                        <video autoplay id="camera-video" style="max-width: 100%"></video>
+                    </div>
+                </section>
+
+                <section class="post">
+                    <header class="post-header">
+                        <h2 class="post-title">Transfer your files safe and easily</h2>
+
+                        <p class="post-meta">
+                            Built using JavaScript, Node.js, Express, PureCSS, multer, basic-auth
+                        </p>
+                    </header>
+
+                    <div class="post-description">
+                        <p>
+                            If you want to exchange some files between your computer and
+                            your smartphone, this is the tool for you.<br>
+                            You don't have to trust Dropbox or Google, just use Boxie.
+                            <a href="https://github.com/samuelantonioli/boxie">Read the source code on Github!</a>
+                        </p>
+                    </div>
+
+            </div>
+            <div class="footer">
+                <div class="pure-menu pure-menu-horizontal">
+                    <ul>
+                        <li class="pure-menu-item"><a href="https://samuelantonioli.de" class="pure-menu-link">By Samuel Antonioli</a></li>
+                        <li class="pure-menu-item"><a href="https://twitter.com/samuelantonioli" class="pure-menu-link">Twitter</a></li>
+                        <li class="pure-menu-item"><a href="https://github.com/samuelantonioli/boxie" class="pure-menu-link">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/majax.js"></script>
+<!-- https://cirocosta.github.io/qcode-decoder/ -->
+<script src="/js/qrcode/scanner/qcode-decoder.min.js"></script>
+<script src="/js/index.js"></script>
+</body>
+</html>
