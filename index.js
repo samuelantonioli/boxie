@@ -77,7 +77,7 @@ var basic_auth = function(req, res, next) {
         unauthorized(res, 'no users');
     }
 };
-app.use(basic_auth);
+//app.use(basic_auth);
 
 // HTML views
 var pages = path.join(__dirname, 'pages');
@@ -96,7 +96,7 @@ app.get('/!/:id', function(req, res) {
 });
 
 // API
-app.post('/', function(req, res) {
+app.post('/', basic_auth, function(req, res) {
     generate_id(function(err, id) {
         if (err) {
             res.json({error: true});
@@ -123,7 +123,7 @@ app.get('/:id', function(req, res) {
         res.json({error: true});
     }
 });
-app.post('/:id', upload.array('file'), function(req, res) {
+app.post('/:id', basic_auth, upload.array('file'), function(req, res) {
     var id = req.params.id,
         files = req.files;
     if (!files) {
@@ -143,7 +143,7 @@ app.post('/:id', upload.array('file'), function(req, res) {
     });
     res.json({success: true});
 });
-app.delete('/:id', function(req, res) {
+app.delete('/:id', basic_auth, function(req, res) {
     // files get deleted after restart
     // TODO: delete them here using async
     var id = req.params.id;
@@ -172,7 +172,7 @@ app.get('/:id/:fid', function(req, res) {
         headers: headers
     });
 });
-app.delete('/:id/:fid', function(req, res) {
+app.delete('/:id/:fid', basic_auth, function(req, res) {
     var id = req.params.id,
         fid = req.params.fid;
     if (!db[id] || !db[id].files.has(fid)) {

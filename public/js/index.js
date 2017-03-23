@@ -12,31 +12,39 @@
         }, true, {'.': ''});
     };
 
-    var qr = new QCodeDecoder();
-    if (!qr.isCanvasSupported() || !qr.hasGetUserMedia()) throw alert("Your browser doesn't match the required specs."), new Error("Canvas and getUserMedia are required");
-    var elems = [
-    {
-        target: document.querySelector("#camera-video"),
-        activator: document.querySelector("#scan"),
-        decoder: qr.decodeFromCamera
-    }];
-    /*{
-        target: document.querySelector("#image img"),
-        activator: document.querySelector("#image button"),
-        decoder: qr.decodeFromImage
-    }, {
-        target: document.querySelector("#video video"),
-        activator: document.querySelector("#video button"),
-        decoder: qr.decodeFromVideo
-    },*/
+    var _initialized = false, _supported = false, qr;
+    function init() {
+        if (_initialized) return _supported;
+        _initialized = true;
 
-    elems.forEach(function(e) {
-        e.activator.onclick = function(r) {
-            r && r.preventDefault(), e.decoder.call(qr, e.target, function(e, r) {
-                if (e) throw e;
-                document.location.href = '/!/'+r;
-                //alert("Just decoded: " + r)
-            }, !0)
+        qr = new QCodeDecoder();
+        if (!qr.isCanvasSupported() || !qr.hasGetUserMedia()) {
+            alert(
+                'Unfortunately your browser doesn\'t support the required features. '+
+                'Please use a QR Code Scanner App.'
+            );
+        } else {
+            _supported = true;
         }
-    });
+        return _supported;
+    }
+
+    var target = document.getElementById('camera-video');
+    document.getElementById('scan').onclick = function(r) {
+        if (r) {
+            r.preventDefault();
+        }
+        if (!init()) {
+            return;
+        }
+        qr.decodeFromCamera.call(qr, target, function(e, u) {
+            if (e) return alert('An error occured ('+e.name+')'); //throw e;
+            //document.location.href = '/!/'+r;
+            // check if we're on the same domain
+            var href = document.location.href, len = href.length;
+            if (u.slice(0, len) == href) {
+                document.location.href = u;
+            }
+        }, true);
+    }
 })();

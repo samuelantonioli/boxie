@@ -42,11 +42,12 @@
         files_el.replaceChild(el, document.getElementById('files-list'));
     }
 
-    document.getElementById('link').innerText = document.location.href.split('?')[0];
+    var link = document.location.href.split('?')[0];
+    document.getElementById('link').innerText = link;
     var id = document.location.pathname.split('/').pop();
     if (id) {
         var qr = new QRCode(document.getElementById('qr'), {
-            text: id,
+            text: link,
             correctLevel : QRCode.CorrectLevel.H
         });
     }
