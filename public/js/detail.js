@@ -48,7 +48,7 @@
     if (id) {
         var qr = new QRCode(document.getElementById('qr'), {
             text: link,
-            correctLevel : QRCode.CorrectLevel.H
+            correctLevel : QRCode.CorrectLevel.L
         });
     }
     console.log(id);

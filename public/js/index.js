@@ -29,7 +29,8 @@
         return _supported;
     }
 
-    var target = document.getElementById('camera-video');
+    var target = document.getElementById('camera-video'),
+        status = document.getElementById('status');
     document.getElementById('scan').onclick = function(r) {
         if (r) {
             r.preventDefault();
@@ -37,9 +38,15 @@
         if (!init()) {
             return;
         }
-        qr.decodeFromCamera.call(qr, target, function(e, u) {
-            if (e) return alert('An error occured ('+e.name+')'); //throw e;
-            //document.location.href = '/!/'+r;
+        qr.videoConstraints = {
+            audio: false,
+            video: {facingMode: 'environment'}
+        };
+        qr.decodeFromCamera(target, function(e, u) {
+            if (e) {
+                status.innerText = e.name +': '+ e.message;
+                return;
+            }
             // check if we're on the same domain
             var href = document.location.href, len = href.length;
             if (u.slice(0, len) == href) {
