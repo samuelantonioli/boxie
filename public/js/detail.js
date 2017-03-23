@@ -56,7 +56,11 @@
         majax('/'+id, function(data) {
             data = JSON.parse(data);
             if (data) {
-                show(data.files);
+                if (data.error) {
+                    document.location.href = '/';
+                } else {
+                    show(data.files);
+                }
             }
         });
     }

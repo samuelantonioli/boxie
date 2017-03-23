@@ -14,7 +14,8 @@ var express = require('express'),
 
 var crypto = require('crypto'),
     fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    async = require('async');
 
 var config = {
     // upload path:
@@ -24,7 +25,9 @@ var config = {
         'admin': 'your-secret-password',
     },
     // should everyone be able to use it? (no user check)
-    anonymous: false
+    anonymous: false,
+    // how many days until a box expires?
+    expires: 14
 };
 
 // in-memory "database"
@@ -51,6 +54,22 @@ var remove = function(name, cb) {
     fs.unlink(path.join(config.path, name), function(err) {
         cb(err);
     });
+};
+
+var remove_box = function(id, cb) {
+    if (db.hasOwnProperty(id)) {
+        var files = db[id].files;
+        async.eachLimit(Array.from(files), 5, function(file, cb) {
+            remove(file[1].id, function(err) {
+                cb();
+            });
+        }, function() {
+            delete db[id];
+            cb();
+        });
+    } else {
+        cb();
+    }
 };
 
 // https://www.npmjs.com/package/basic-auth
@@ -97,25 +116,42 @@ app.get('/!/:id', function(req, res) {
 
 // API
 app.post('/', basic_auth, function(req, res) {
-    generate_id(function(err, id) {
-        if (err) {
-            res.json({error: true});
-        } else {
-            db[id] = {files: new Map()};
-            res.json({
-                success: true,
-                id: id,
-                url: '/'+id
+    var create = function() {
+        generate_id(function(err, id) {
+            if (err) {
+                res.json({error: true});
+            } else {
+                db[id] = {files: new Map()};
+                if (config.expires) {
+                    var d = new Date();
+                    d.setDate(d.getDate() + config.expires);
+                    db[id].expires = d;
+                }
+                var data = {
+                    success: true,
+                    id: id,
+                    url: '/'+id
+                };
+                res.json(data);
+            }
+        });
+    };
+    // delete expired boxes
+    if (config.expires) {
+        var now = new Date(),
+            ids = Object.keys(db).filter(function(id) {
+                return (db[id].expires)?(db[id].expires <= now):false;
             });
-        }
-    });
+        async.eachSeries(ids, remove_box, create);
+    } else {
+        create();
+    }
 });
 app.get('/:id', function(req, res) {
     var id = req.params.id;
-    if (db[id]) {
+    if (db.hasOwnProperty(id)) {
         res.json({
             files: Array.from(db[id].files).map(function(item) {
-                item[1].id = item[0];
                 return item[1];
             })
         });
@@ -129,11 +165,12 @@ app.post('/:id', basic_auth, upload.array('file'), function(req, res) {
     if (!files) {
         return res.json({success: true});
     }
-    if (!db[id]) {
+    if (!db.hasOwnProperty(id)) {
         return res.json({error: true});
     }
     files.forEach(function(file) {
         var data = {
+            id: file.filename,
             name: file.originalname,
             size: file.size,
             mime: file.mimetype,
@@ -144,20 +181,21 @@ app.post('/:id', basic_auth, upload.array('file'), function(req, res) {
     res.json({success: true});
 });
 app.delete('/:id', basic_auth, function(req, res) {
-    // files get deleted after restart
-    // TODO: delete them here using async
     var id = req.params.id;
-    if (db[id]) {
-        delete db[id];
+    if (db.hasOwnProperty(id)) {
+        remove_box(id, function() {
+            res.json({success: true});
+        });
+    } else {
+        res.json({error: true});
     }
-    res.json({success: true});
 });
 
 app.get('/:id/:fid', function(req, res) {
     var id = req.params.id,
         fid = req.params.fid;
     // for security:
-    if (!db[id] || !db[id].files.has(fid)) {
+    if (!db.hasOwnProperty(id) || !db[id].files.has(fid)) {
         return res.sendStatus(404);
     }
     var headers = {};
@@ -175,7 +213,7 @@ app.get('/:id/:fid', function(req, res) {
 app.delete('/:id/:fid', basic_auth, function(req, res) {
     var id = req.params.id,
         fid = req.params.fid;
-    if (!db[id] || !db[id].files.has(fid)) {
+    if (!db.hasOwnProperty(id) || !db[id].files.has(fid)) {
         return res.json({success: true});
     }
     db[id].files.delete(fid);
