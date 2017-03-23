@@ -30,11 +30,13 @@
         var el = element(['ul', {id: 'files-list'}, null,
             (files && files.length)?files.map(function(file) {
                 return ['li', null, null, [
-                    ['div', null, null, [
-                        ['a', {href: file.url+'?download'}, file.name, [
-                            ['span', {'class': 'size'}, '('+filesize(file.size)+')']
+                    ['div', {'class': 'row cf'}, null, [
+                        ['span', {'class': 'filename'}, null, [
+                            ['a', {href: file.url+'?download'}, file.name, [
+                                ['span', {'class': 'size'}, '('+filesize(file.size)+')']
+                            ]],
                         ]],
-                        ['span', {'class': 'remove', 'data-id': file.id}, 'X']
+                        ['div', {'class': 'remove', 'data-id': file.id}]
                     ]]
                 ]];
             }):[['h3', null, 'No files uploaded (yet)']]
@@ -86,7 +88,7 @@
     };
     */
 
-    setInterval(update, 7500);
+    //setInterval(update, 7500);
     update();
 
     var dropzone = new Dropzone('div#upload', {

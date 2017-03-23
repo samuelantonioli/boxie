@@ -9,6 +9,20 @@ body {
     box-sizing: border-box;
 }
 
+/* clearfix */
+.cf:before,
+.cf:after {
+    content: " ";
+    display: table;
+}
+.cf:after {
+    clear: both;
+}
+.cf {
+    *zoom: 1; /* IE6/7 */
+}
+
+
 a {
     text-decoration: none;
     color: rgb(61, 146, 201);
@@ -195,27 +209,52 @@ h3 {
     list-style-type: none;
     padding-left: 0;
 }
-#files-list div {
+#files-list .row {
     display: block;
-    background: #ccc;
+    background-color: #6c8ba2;
     padding: 10px;
     margin-bottom: 5px;
 }
 #files-list a {
     text-decoration: none;
-    color: #333;
+    color: #fff;
 }
 #files-list .size {
     margin-left: 5px;
-    color: #777;
+    color: #eee;
 }
 #files-list .remove {
     float: right;
     padding-left: 10px;
     font-size: 20px;
-    cursor: pointer;
 }
 #link {
     word-break: break-all;
     color: #999;
+}
+
+.remove {
+    margin: 0 auto;
+    width: 26px;
+    height: 26px;
+
+    cursor: pointer;
+    background: url(remove.svg) top / cover;
+}
+
+#deletebox {
+    display: inline-block;
+    padding: 10px;
+    background-color: rgb(202, 60, 60);
+    width: 38px;
+    height: 38px;
+}
+
+.filename {
+    line-height: 25px;
+}
+.filename a {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1em;
 }
